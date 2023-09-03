@@ -69,16 +69,17 @@ MAKEFLAGS	+=	--no-print-directory
 all : libs $(NAME)
 
 linux : libs-l ${NAME_L}
+	@echo "\033[32mminiRT compiled"
 
 binaries/%.o : %.c Makefile includes/minirt.h | binaries
 		@mkdir -p $(@D)
-		$(CC) $(CFLAGS) $(INCLUDES) $(INCLUDES_L) -I./includes/ -c $< -o $@
+		@$(CC) $(CFLAGS) $(INCLUDES) $(INCLUDES_L) -I./includes/ -c $< -o $@
 
 ${NAME_L} : ${OBJS}
-	${CC} ${OBJS} -LLibft -lft -Lmlx -lmlx -lX11 -lXext -lm -o ${NAME_L}
+	@${CC} ${OBJS} -LLibft -lft -Lmlx -lmlx -lX11 -lXext -lm -o ${NAME_L}
 
 $(NAME) : $(OBJS)
-		$(CC) $(OBJS) -LLibft -lft -L$(MINILIBX) $(XFLAGS) $(MATH_LIB) -o $(NAME)
+		@$(CC) $(OBJS) -LLibft -lft -L$(MINILIBX) $(XFLAGS) $(MATH_LIB) -o $(NAME)
 
 
 libs:
@@ -104,6 +105,7 @@ fclean:	clean
 		@$(RM) $(NAME)
 		@$(RM) $(NAME_L)
 		@$(MAKE) fclean -C Libft
+		@echo "\033[36mminiRT cleans"
 
 re:		fclean all
 
