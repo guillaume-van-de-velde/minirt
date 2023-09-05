@@ -84,6 +84,7 @@ void	fill_rt(char **rows, t_rt *rt, t_parsing parsing);
 void	free_maps(t_normal_map *normal_maps, int *good_maps);
 void	set_maps(t_normal_map *normal_maps);
 void	free_split(char **split);
+void	normal_map_error(char **rows);
 void	parsing(int argc, char **argv, t_rt *rt);
 
 #endif

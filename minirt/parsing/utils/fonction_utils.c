@@ -45,3 +45,10 @@ void	free_maps(t_normal_map *normal_maps, int *good_maps)
 	}
 	free(normal_maps);
 }
+
+void	normal_map_error(char **rows)
+{
+	free_split(rows);
+	error_allocation();
+	exit(1);
+}

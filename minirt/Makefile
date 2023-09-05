@@ -1,7 +1,5 @@
 NAME		=	miniRT
 
-NAME_L		=	miniRT_L
-
 SRCS		=	main.c									close_program.c \
 				rendering/render.c						rendering/cast_ray.c \
 				rendering/utils/ambient.c				rendering/utils/math.c \
@@ -50,15 +48,9 @@ CFLAGS		=	-Wall -Wextra #Werror
 
 INC_LIB		=	-ILibft/includes/libc -ILibft/includes/gnl -Iincludes
 
-#LINUX
-INCLUDES_L	=	-Imlx $(INC_LIB)
-MINILIBX_L	=	mlx
-XFLAGS_L	=	-lmlx -lXext -lX11
-
-#MACOS
-INCLUDES	=	-Iminilibx_macos $(INC_LIB)
-MINILIBX	=	minilibx_macos
-XFLAGS		=	-lmlx -framework OpenGL -framework AppKit
+INCLUDES	=	-Imlx $(INC_LIB)
+MINILIBX	=	mlx
+XFLAGS	=	-lmlx -lXext -lX11
 
 MATH_LIB	=	-lm
 
@@ -67,27 +59,17 @@ RM			=	rm -f
 MAKEFLAGS	+=	--no-print-directory
 
 all : libs $(NAME)
-
-linux : libs-l ${NAME_L}
 	@echo "\033[32mminiRT compiled"
 
 binaries/%.o : %.c Makefile includes/minirt.h | binaries
 		@mkdir -p $(@D)
-		@$(CC) $(CFLAGS) $(INCLUDES) $(INCLUDES_L) -I./includes/ -c $< -o $@
+		@$(CC) $(CFLAGS) $(INCLUDES) -I./includes/ -c $< -o $@
 
-${NAME_L} : ${OBJS}
-	@${CC} ${OBJS} -LLibft -lft -Lmlx -lmlx -lX11 -lXext -lm -o ${NAME_L}
-
-$(NAME) : $(OBJS)
-		@$(CC) $(OBJS) -LLibft -lft -L$(MINILIBX) $(XFLAGS) $(MATH_LIB) -o $(NAME)
-
+${NAME} : ${OBJS}
+	@${CC} ${OBJS} -LLibft -lft -Lmlx -lmlx -lX11 -lXext -lm -o ${NAME}
 
 libs:
 		@$(MAKE) -C $(MINILIBX)
-		@$(MAKE) -C Libft
-
-libs-l:
-		@$(MAKE) -C $(MINILIBX_L)
 		@$(MAKE) -C Libft
 
 binaries:
@@ -98,12 +80,10 @@ bonus: all
 clean:
 		@$(RM) -r binaries/
 		@$(MAKE) clean -C $(MINILIBX)
-		@$(MAKE) clean -C $(MINILIBX_L)
 		@$(MAKE) clean -C Libft
 
 fclean:	clean
 		@$(RM) $(NAME)
-		@$(RM) $(NAME_L)
 		@$(MAKE) fclean -C Libft
 		@echo "\033[36mminiRT cleans"
 

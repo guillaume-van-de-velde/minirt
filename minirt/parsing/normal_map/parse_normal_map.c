@@ -97,7 +97,7 @@ void	load_normal_maps(t_rt *rt, char **rows)
 
 	rt->normal_maps = malloc(sizeof(t_normal_map) * NB_MAP);
     if (!rt->normal_maps)
-        (free_split(rows), error_allocation(), exit(1));
+        normal_map_error(rows);
 	rt->nb_normal_maps = NB_MAP;
 	set_maps(rt->normal_maps);
 	good_maps = fill_good_maps(rows);
