@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cast_ray.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: stde-la- <stde-la-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: svan-de- <svan-de-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/10 15:45:51 by stde-la-          #+#    #+#             */
-/*   Updated: 2023/08/12 03:01:00 by stde-la-         ###   ########.fr       */
+/*   Updated: 2023/09/11 12:35:02 by svan-de-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,16 @@ int	intersect_objects(t_world *world, t_ray *ray, t_hit_info *hit)
 	return (hit->t != INFINITY);
 }
 
+int	deterministic_stars(t_vec dir)
+{
+	int	sum;
+
+	sum = roundf(dir.x * 449) * roundf(dir.y * 756) + roundf(dir.z * 633);
+	if (sum % 2000 == 0)
+		return (1);
+	return (0);
+}
+
 t_rgb	cast_ray(t_world *world, t_ray *ray, int is_specular_ray, int depth)
 {
 	t_hit_info	hit;
@@ -65,13 +75,14 @@ t_rgb	cast_ray(t_world *world, t_ray *ray, int is_specular_ray, int depth)
 		return ((t_rgb){0.f, 0.f, 0.f});
 	if (intersect_objects(world, ray, &hit))
 	{
-		// return (color_fade(hit.obj->color, min(30 / pow2(hit.t), 2) * 2));
 		if (hit.obj->light_intensity && world->ambient < 1.0)
 			return (color_fade(hit.obj->color,
-				hit.obj->light_intensity * (1 - world->ambient)));
+					hit.obj->light_intensity * (1 - world->ambient)));
 		hit.is_specular = is_specular_ray;
 		return (shade_hitpoint(world, &hit, ray, depth));
 	}
+	if (world->display_stars && deterministic_stars(ray->dir))
+		return ((t_rgb){1.f, 1.f, 1.f});
 	if (world->ambient)
 		return (ambient_light(&(world->ambient_light), ray, world->ambient));
 	return ((t_rgb){0.f, 0.f, 0.f});

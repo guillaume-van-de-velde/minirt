@@ -72,7 +72,7 @@ clean:
 
 fclean: clean
 	@${RM} ${NAME}
-	@echo "\033[36mLibft cleans"
+	@echo "\033[36mLibft library is delete"
 
 re: fclean all
 

@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   fonction_utils.c                                   :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: svan-de- <svan-de-@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/09/10 18:17:59 by svan-de-          #+#    #+#             */
+/*   Updated: 2023/09/10 18:18:05 by svan-de-         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minirt.h"
 
 void	free_split(char **split)
@@ -19,7 +31,7 @@ void	free_split(char **split)
 	}
 }
 
-void	set_maps(t_normal_map *normal_maps)
+void	set_maps(t_texture_map *normal_maps)
 {
 	int	i;
 
@@ -31,7 +43,7 @@ void	set_maps(t_normal_map *normal_maps)
 	}
 }
 
-void	free_maps(t_normal_map *normal_maps, int *good_maps)
+void	free_maps(t_texture_map *normal_maps, int *good_maps)
 {
 	int	i;
 
@@ -39,16 +51,10 @@ void	free_maps(t_normal_map *normal_maps, int *good_maps)
 	free(good_maps);
 	while (i < NB_MAP)
 	{
-		if (normal_maps[i].map)
+		if (normal_maps && normal_maps[i].map)
 			(free(normal_maps[i].map), normal_maps[i].map = NULL);
 		i++;
 	}
-	free(normal_maps);
-}
-
-void	normal_map_error(char **rows)
-{
-	free_split(rows);
-	error_allocation();
-	exit(1);
+	if (normal_maps)
+		free(normal_maps);
 }

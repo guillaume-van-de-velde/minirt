@@ -30,7 +30,8 @@ SRCS		=	main.c									close_program.c \
 				parsing/type/check_syntax/other.c parsing/type/check_syntax/range.c \
 				parsing/type/check_syntax/rgb.c parsing/type/check_syntax/null.c\
 				parsing/type/check_syntax/vector.c parsing/type/check_syntax/letter.c\
-				parsing/fill_rt/fill_rt.c \
+				parsing/type/type_cylinder_cone_optionnal.c \
+				parsing/fill_rt/fill_rt.c parsing/fill_rt/fill_rt_utils.c\
 				parsing/fill_rt/materials/fill_data.c	parsing/fill_rt/materials/fill_materials.c \
 				parsing/fill_rt/get_number/conversion.c parsing/fill_rt/get_number/get_value.c\
 
@@ -44,7 +45,7 @@ LIBFT		=	Libft
 
 CC			=	cc
 
-CFLAGS		=	-Wall -Wextra #Werror
+CFLAGS		=	-Wall -Wextra -Werror
 
 INC_LIB		=	-ILibft/includes/libc -ILibft/includes/gnl -Iincludes
 
@@ -56,21 +57,28 @@ MATH_LIB	=	-lm
 
 RM			=	rm -f
 
+HEADERS		=	includes/minirt.h includes/parsing.h includes/rendering.h includes/structures.h
+
 MAKEFLAGS	+=	--no-print-directory
 
-all : libs $(NAME)
+all :  ${NAME} | libs
+
+binaries/%.o : %.c Makefile $(HEADERS) | binaries
+		@mkdir -p $(@D)
+		@$(CC) $(CFLAGS) -I./includes $(INCLUDES) -c $< -o $@
+
+${NAME} : ${OBJS} | libs
+	@${CC} ${OBJS} -LLibft -lft -Lmlx -lmlx -lX11 -lXext -lm -o ${NAME}
 	@echo "\033[32mminiRT compiled"
 
-binaries/%.o : %.c Makefile includes/minirt.h | binaries
-		@mkdir -p $(@D)
-		@$(CC) $(CFLAGS) $(INCLUDES) -I./includes/ -c $< -o $@
+mlx/libmlx.a:
+	@$(MAKE) -C $(MINILIBX)
+	@echo "\033[32mmililibx compiled"
 
-${NAME} : ${OBJS}
-	@${CC} ${OBJS} -LLibft -lft -Lmlx -lmlx -lX11 -lXext -lm -o ${NAME}
+Libft/libft.a:
+	@$(MAKE) -C Libft
 
-libs:
-		@$(MAKE) -C $(MINILIBX)
-		@$(MAKE) -C Libft
+libs: mlx/libmlx.a Libft/libft.a
 
 binaries:
 		@mkdir -p binaries
@@ -80,12 +88,15 @@ bonus: all
 clean:
 		@$(RM) -r binaries/
 		@$(MAKE) clean -C $(MINILIBX)
+		@echo "\033[36mminilibx is clean"
 		@$(MAKE) clean -C Libft
+		@echo "\033[36mLibft is clean"
+		@echo "\033[36mminiRT is clean"
 
 fclean:	clean
 		@$(RM) $(NAME)
 		@$(MAKE) fclean -C Libft
-		@echo "\033[36mminiRT cleans"
+		@echo "\033[36mminiRT file is delete"
 
 re:		fclean all
 
